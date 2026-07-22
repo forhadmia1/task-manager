@@ -6,11 +6,12 @@
  */
 
 import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { StatusBar, StyleSheet, useColorScheme, View, Text } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { env } from './src/env';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -28,6 +29,7 @@ function AppContent() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.envText}>Supabase URL: {env.PUBLIC_SUPABASE_URL}</Text>
       <NewAppScreen
         templateFileName="App.tsx"
         safeAreaInsets={safeAreaInsets}
@@ -39,6 +41,11 @@ function AppContent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  envText: {
+    padding: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 
