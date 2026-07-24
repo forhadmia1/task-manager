@@ -1,26 +1,27 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { FlatList, StyleSheet, RefreshControl, View, Text, TextInput } from 'react-native';
+import { FlatList, StyleSheet, RefreshControl, View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import { Header } from '../../../componets/Header';
-import { Plus, Search, WifiOff } from 'lucide-react-native';
+import { Plus, Search, WifiOff, ArrowDown, ArrowUp } from 'lucide-react-native';
 import { ScreenWrapper } from '../../../componets/ScreenWrapper';
 import { TaskCard, Task } from '../components/TaskCard';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { fetchTasks } from '../../../store/slices/taskSlice';
-import { selectFilteredAndSortedTasks } from '../../../store/selectors/taskSelectors';
+import { selectFilteredAndSortedTasks, TaskStatusFilter, TaskSortOption } from '../../../store/selectors/taskSelectors';
 import { debounce } from '../../../utils/debounce';
 
 export function TaskListScreen() {
   const dispatch = useAppDispatch();
   const { isRefreshing, isOffline, lastRefreshedAt } = useAppSelector((state) => state.tasks);
 
-
+  const [statusFilter, setStatusFilter] = useState<TaskStatusFilter>('all');
+  const [sortOption, setSortOption] = useState<TaskSortOption>('created_at_desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
 
   const filteredTasksSelector = useMemo(
-    () => selectFilteredAndSortedTasks(debouncedSearchQuery),
-    [debouncedSearchQuery]
+    () => selectFilteredAndSortedTasks(statusFilter, debouncedSearchQuery, sortOption),
+    [statusFilter, debouncedSearchQuery, sortOption]
   );
 
   const tasks = useAppSelector(filteredTasksSelector);
@@ -92,6 +93,32 @@ export function TaskListScreen() {
         />
       </View>
 
+      <View style={styles.filterSortContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          {(['all', 'open', 'inprogress', 'complete'] as TaskStatusFilter[]).map((status) => (
+            <TouchableOpacity
+              key={status}
+              style={[styles.filterChip, statusFilter === status && styles.filterChipActive]}
+              onPress={() => setStatusFilter(status)}
+            >
+              <Text style={[styles.filterChipText, statusFilter === status && styles.filterChipTextActive]}>
+                {status === 'inprogress' ? 'In Progress' : status.charAt(0).toUpperCase() + status.slice(1)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        <TouchableOpacity
+          style={styles.sortButton}
+          onPress={() => setSortOption(sortOption === 'created_at_desc' ? 'created_at_asc' : 'created_at_desc')}
+        >
+          {sortOption === 'created_at_desc' ? (
+            <ArrowDown size={20} color="#4B5563" />
+          ) : (
+            <ArrowUp size={20} color="#4B5563" />
+          )}
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
@@ -150,5 +177,45 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
+  },
+  filterSortContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 4,
+  },
+  filtersScroll: {
+    flex: 1,
+    marginRight: 8,
+  },
+  filterChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F3F4F6',
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  filterChipActive: {
+    backgroundColor: '#EEF2FF',
+    borderColor: '#6366F1',
+  },
+  filterChipText: {
+    fontSize: 14,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  filterChipTextActive: {
+    color: '#6366F1',
+    fontWeight: '600',
+  },
+  sortButton: {
+    padding: 8,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
