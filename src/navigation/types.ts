@@ -6,6 +6,9 @@ export type AppStackParamList
     TaskDetails: {
       id: string
     };
+    EditTask: {
+      id: string
+    };
   };
 
 export type BottomTabParamList = {

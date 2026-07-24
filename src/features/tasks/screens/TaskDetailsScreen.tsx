@@ -7,9 +7,11 @@ import { ArrowLeft, Edit2, Calendar, Circle, CheckCircle2, Clock, Folder, Hash }
 import { useAppSelector, useAppDispatch } from '../../../store';
 import { TaskStatus } from '../components/TaskCard';
 import { updateTask } from '../../../store/slices/taskSlice';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppStackParamList } from '../../../navigation';
 
 export function TaskDetailsScreen({ route }: any) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const dispatch = useAppDispatch();
   const { id } = route?.params || {};
   const task = useAppSelector(state => state.tasks.tasks.find(t => t.id === id));
@@ -63,7 +65,7 @@ export function TaskDetailsScreen({ route }: any) {
         leftIcon={<ArrowLeft color="#111827" size={24} />}
         onPressLeft={() => navigation.goBack()}
         rightIcon={<Edit2 color="#111827" size={20} />}
-        onPressRight={() => console.log('Edit task')}
+        onPressRight={() => navigation.navigate('EditTask', { id })}
       />
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <View style={styles.headerRow}>
