@@ -8,9 +8,10 @@ interface CategoryDropdownProps {
   onChange: (value: string) => void;
   error?: string;
   disabled?: boolean;
+  allowAll?: boolean;
 }
 
-export function CategoryDropdown({ value, onChange, error, disabled }: CategoryDropdownProps) {
+export function CategoryDropdown({ value, onChange, error, disabled, allowAll }: CategoryDropdownProps) {
   const dispatch = useAppDispatch();
   const categories = useAppSelector((state) => state.tasks.categories);
 
@@ -24,6 +25,10 @@ export function CategoryDropdown({ value, onChange, error, disabled }: CategoryD
     label: cat.name,
     value: cat.id,
   }));
+
+  if (allowAll) {
+    data.unshift({ label: 'All Categories', value: 'all' });
+  }
 
   return (
     <CustomDropdown

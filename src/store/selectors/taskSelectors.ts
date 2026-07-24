@@ -9,11 +9,17 @@ const selectAllTasks = (state: RootState) => state.tasks.tasks;
 export const selectFilteredAndSortedTasks = (
   statusFilter: TaskStatusFilter,
   searchQuery: string,
-  sortOption: TaskSortOption
+  sortOption: TaskSortOption,
+  categoryId: string
 ) => createSelector(
   [selectAllTasks],
   (tasks) => {
     let filteredTasks = tasks;
+
+    // Filter by category
+    if (categoryId !== 'all') {
+      filteredTasks = filteredTasks.filter(task => task.category_id === categoryId);
+    }
 
     // 1. Filter by status
     if (statusFilter !== 'all') {

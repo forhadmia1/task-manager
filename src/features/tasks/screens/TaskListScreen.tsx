@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Header } from '../../../components/Header';
 import { Plus, Search, WifiOff, ArrowDown, ArrowUp } from 'lucide-react-native';
 import { ScreenWrapper } from '../../../components/ScreenWrapper';
+import { CategoryDropdown } from '../components/CategoryDropdown';
 import { TaskCard, Task } from '../components/TaskCard';
 import { AddTaskModal } from '../components/AddTaskModal';
 import { useAppDispatch, useAppSelector } from '../../../store';
@@ -19,6 +20,7 @@ export function TaskListScreen() {
   const { isRefreshing, isOffline, lastRefreshedAt } = useAppSelector((state) => state.tasks);
 
   const [statusFilter, setStatusFilter] = useState<TaskStatusFilter>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sortOption, setSortOption] = useState<TaskSortOption>('created_at_desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
@@ -27,8 +29,8 @@ export function TaskListScreen() {
 
 
   const filteredTasksSelector = useMemo(
-    () => selectFilteredAndSortedTasks(statusFilter, debouncedSearchQuery, sortOption),
-    [statusFilter, debouncedSearchQuery, sortOption]
+    () => selectFilteredAndSortedTasks(statusFilter, debouncedSearchQuery, sortOption, categoryFilter),
+    [statusFilter, debouncedSearchQuery, sortOption, categoryFilter]
   );
 
   const tasks = useAppSelector(filteredTasksSelector);
@@ -100,6 +102,14 @@ export function TaskListScreen() {
           placeholder="Search tasks..."
           value={searchQuery}
           onChangeText={handleSearchChange}
+        />
+      </View>
+
+      <View style={{ paddingHorizontal: 16, marginTop: 12 }}>
+        <CategoryDropdown
+          value={categoryFilter}
+          onChange={setCategoryFilter}
+          allowAll={true}
         />
       </View>
 
