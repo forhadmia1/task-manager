@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { FlatList, StyleSheet, RefreshControl, View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native';
-import { Header } from '../../../componets/Header';
+import { FlatList, StyleSheet, RefreshControl, View, Text, TextInput, ScrollView, TouchableOpacity, } from 'react-native';
+import { Header } from '../../../components/Header';
 import { Plus, Search, WifiOff, ArrowDown, ArrowUp } from 'lucide-react-native';
-import { ScreenWrapper } from '../../../componets/ScreenWrapper';
+import { ScreenWrapper } from '../../../components/ScreenWrapper';
 import { TaskCard, Task } from '../components/TaskCard';
+import { AddTaskModal } from '../components/AddTaskModal';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { fetchTasks } from '../../../store/slices/taskSlice';
 import { selectFilteredAndSortedTasks, TaskStatusFilter, TaskSortOption } from '../../../store/selectors/taskSelectors';
@@ -17,6 +18,8 @@ export function TaskListScreen() {
   const [sortOption, setSortOption] = useState<TaskSortOption>('created_at_desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
 
 
   const filteredTasksSelector = useMemo(
@@ -60,13 +63,15 @@ export function TaskListScreen() {
     />
   );
 
+
+
   return (
     <ScreenWrapper>
       <Header
         title="My Tasks"
         onPressLeft={() => console.log('Open Drawer')}
         rightIcon={<Plus color="#111827" size={24} />}
-        onPressRight={() => console.log('Add Task')}
+        onPressRight={() => setIsAddModalVisible(true)}
       />
 
       <View style={styles.syncStatusContainer}>
@@ -128,6 +133,11 @@ export function TaskListScreen() {
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
         }
+      />
+
+      <AddTaskModal
+        isVisible={isAddModalVisible}
+        onClose={() => setIsAddModalVisible(false)}
       />
     </ScreenWrapper>
   );

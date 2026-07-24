@@ -42,6 +42,41 @@ export const fetchTasks = createAsyncThunk(
   }
 );
 
+export const fetchCategories = createAsyncThunk(
+  'tasks/fetchCategories',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+
+      if (error) throw error;
+      return data as Category[];
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const createTask = createAsyncThunk(
+  'tasks/createTask',
+  async (taskData: Omit<Task, 'id' | 'created_at' | 'starred' | 'status'>, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from('tasks')
+        .insert([taskData])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as Task;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 
 const taskSlice = createSlice({
   name: 'tasks',
@@ -73,6 +108,14 @@ const taskSlice = createSlice({
       .addCase(fetchTasks.rejected, (state) => {
         state.isRefreshing = false;
         state.isOffline = true;
+      })
+      // Create Task
+      .addCase(createTask.fulfilled, (state, action) => {
+        state.tasks.unshift(action.payload);
+      })
+      // Fetch Categories
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.categories = action.payload;
       })
 
   },
