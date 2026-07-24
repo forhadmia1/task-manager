@@ -77,6 +77,24 @@ export const createTask = createAsyncThunk(
   }
 );
 
+export const updateTask = createAsyncThunk(
+  'tasks/updateTask',
+  async ({ id, updates }: { id: string; updates: Partial<Omit<Task, 'id' | 'created_at'>> }, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from('tasks')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as Task;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const taskSlice = createSlice({
   name: 'tasks',
@@ -112,6 +130,13 @@ const taskSlice = createSlice({
       // Create Task
       .addCase(createTask.fulfilled, (state, action) => {
         state.tasks.unshift(action.payload);
+      })
+      // Update Task
+      .addCase(updateTask.fulfilled, (state, action) => {
+        const index = state.tasks.findIndex(t => t.id === action.payload.id);
+        if (index !== -1) {
+          state.tasks[index] = action.payload;
+        }
       })
       // Fetch Categories
       .addCase(fetchCategories.fulfilled, (state, action) => {

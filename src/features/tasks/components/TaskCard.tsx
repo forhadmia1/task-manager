@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Calendar, CheckCircle2, Circle, Clock } from 'lucide-react-native';
 
-export type TaskStatus = 'pending' | 'inprogress' | 'completed';
+export type TaskStatus = 'pending' | 'inprogress' | 'complete';
 
 export interface Task {
   id: string;
@@ -22,7 +22,7 @@ interface TaskCardProps {
 
 const getStatusIcon = (status: TaskStatus) => {
   switch (status) {
-    case 'completed':
+    case 'complete':
       return <CheckCircle2 color="#10B981" size={20} />; // Emerald-500
     case 'inprogress':
       return <Clock color="#3B82F6" size={20} />; // Blue-500
@@ -33,7 +33,7 @@ const getStatusIcon = (status: TaskStatus) => {
 
 const getStatusText = (status: TaskStatus) => {
   switch (status) {
-    case 'completed': return 'Completed';
+    case 'complete': return 'Completed';
     case 'inprogress': return 'In Progress';
     default: return 'Pending';
   }
@@ -50,7 +50,7 @@ export function TaskCard({ task, onPress }: TaskCardProps) {
         <View style={styles.titleContainer}>
           <Text style={[
             styles.title,
-            task.status === 'completed' && styles.titleCompleted
+            task.status === 'complete' && styles.titleCompleted
           ]} numberOfLines={1}>
             {task.title}
           </Text>

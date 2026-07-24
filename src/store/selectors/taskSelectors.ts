@@ -18,11 +18,11 @@ export const selectFilteredAndSortedTasks = (
     // 1. Filter by status
     if (statusFilter !== 'all') {
       if (statusFilter === 'open') {
-        filteredTasks = filteredTasks.filter(task => task.status !== 'completed');
+        filteredTasks = filteredTasks.filter(task => task.status !== 'complete');
       } else if (statusFilter === 'inprogress') {
         filteredTasks = filteredTasks.filter(task => task.status === 'inprogress');
       } else if (statusFilter === 'complete') {
-        filteredTasks = filteredTasks.filter(task => task.status === 'completed');
+        filteredTasks = filteredTasks.filter(task => task.status === 'complete');
       }
     }
 
