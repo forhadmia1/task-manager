@@ -44,14 +44,14 @@ export function TaskDetailsScreen({ route }: any) {
     switch (status) {
       case 'complete': return 'Completed';
       case 'inprogress': return 'In Progress';
-      default: return 'Pending';
+      default: return 'Open';
     }
   };
 
   //update status handler
   const handleUpdateStatus = () => {
     const buttons: AlertButton[] = [];
-    if (task.status !== 'pending') buttons.push({ text: 'Pending', onPress: () => dispatch(updateTask({ id, updates: { status: 'pending' } })) });
+    if (task.status !== 'open') buttons.push({ text: 'Open', onPress: () => dispatch(updateTask({ id, updates: { status: 'open' } })) });
     if (task.status !== 'inprogress') buttons.push({ text: 'In Progress', onPress: () => dispatch(updateTask({ id, updates: { status: 'inprogress' } })) });
     if (task.status !== 'complete') buttons.push({ text: 'Completed', onPress: () => dispatch(updateTask({ id, updates: { status: 'complete' } })) });
     buttons.push({ text: 'Cancel', style: 'cancel' });

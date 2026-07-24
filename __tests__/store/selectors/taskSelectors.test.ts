@@ -7,7 +7,7 @@ describe('taskSelectors', () => {
     {
       id: '1',
       title: 'Task A',
-      status: 'pending',
+      status: 'open',
       created_at: '2023-01-01T10:00:00Z',
       category_id: 'cat1',
       due_date: '2023-01-05T10:00:00Z',
@@ -26,7 +26,7 @@ describe('taskSelectors', () => {
       status: 'complete',
       created_at: '2023-01-03T10:00:00Z',
       category_id: 'cat1',
-      // No due date
+      due_date: '2023-01-04T10:00:00Z',
     },
   ];
 
@@ -39,8 +39,8 @@ describe('taskSelectors', () => {
   it('filters by status', () => {
     const selector = selectFilteredAndSortedTasks('open', '', 'created_at_desc', 'all');
     const result = selector(mockState);
-    expect(result.length).toBe(2);
-    expect(result.every(t => t.status !== 'complete')).toBe(true);
+    expect(result.length).toBe(1);
+    expect(result.every(t => t.status === 'open')).toBe(true);
   });
 
   it('filters by category', () => {

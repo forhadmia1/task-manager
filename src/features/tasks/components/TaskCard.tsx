@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Calendar, CheckCircle2, Circle, Clock, Star } from 'lucide-react-native';
 
-export type TaskStatus = 'pending' | 'inprogress' | 'complete';
+export type TaskStatus = 'open' | 'inprogress' | 'complete';
 
 export interface Task {
   id: string;
@@ -36,7 +36,7 @@ const getStatusText = (status: TaskStatus) => {
   switch (status) {
     case 'complete': return 'Completed';
     case 'inprogress': return 'In Progress';
-    default: return 'Pending';
+    default: return 'Open';
   }
 };
 
