@@ -1,17 +1,17 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { TaskListScreen } from '../../features/tasks/screens/TaskListScreen';
 import { TaskDetailsScreen } from '../../features/tasks/screens/TaskDetailsScreen';
-import { TasksStackParamList } from '../types';
+import { AppStackParamList } from '../types';
+import { BottomTabNavigator } from './BottomTabNavigator';
 
-const Stack = createNativeStackNavigator<TasksStackParamList>();
+const Stack = createNativeStackNavigator<AppStackParamList>();
 
-export function TasksStackNavigator() {
+export function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='TaskList' screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName='Tab' screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        name="TaskList"
-        component={TaskListScreen}
+        name="Tab"
+        component={BottomTabNavigator}
         options={{ title: 'My Tasks' }}
       />
       <Stack.Screen

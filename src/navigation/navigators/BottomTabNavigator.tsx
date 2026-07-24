@@ -1,10 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { CategoryListScreen } from '../../features/categories/screens/CategoryListScreen';
-import { TasksStackNavigator } from './TasksStackNavigator';
 import { BottomTabParamList } from '../types';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { CheckSquare, Folder } from 'lucide-react-native';
+import { TaskListScreen } from '../../features/tasks/screens/TaskListScreen';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -72,7 +72,7 @@ export function BottomTabNavigator() {
     <Tab.Navigator initialRouteName='TasksTab' screenOptions={{ headerShown: false }} tabBar={(props) => <MyTabBar {...props} />}>
       <Tab.Screen
         name="TasksTab"
-        component={TasksStackNavigator}
+        component={TaskListScreen}
       />
       <Tab.Screen
         name="CategoriesTab"

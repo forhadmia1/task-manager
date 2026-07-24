@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { FlatList, StyleSheet, RefreshControl, View, Text, TextInput, ScrollView, TouchableOpacity, } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Header } from '../../../components/Header';
 import { Plus, Search, WifiOff, ArrowDown, ArrowUp } from 'lucide-react-native';
 import { ScreenWrapper } from '../../../components/ScreenWrapper';
@@ -9,9 +10,12 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { fetchTasks } from '../../../store/slices/taskSlice';
 import { selectFilteredAndSortedTasks, TaskStatusFilter, TaskSortOption } from '../../../store/selectors/taskSelectors';
 import { debounce } from '../../../utils/debounce';
+import type { AppStackParamList } from '../../../navigation/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export function TaskListScreen() {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const { isRefreshing, isOffline, lastRefreshedAt } = useAppSelector((state) => state.tasks);
 
   const [statusFilter, setStatusFilter] = useState<TaskStatusFilter>('all');
@@ -59,7 +63,7 @@ export function TaskListScreen() {
   const renderItem = ({ item }: { item: Task }) => (
     <TaskCard
       task={item}
-      onPress={(task) => console.log('Navigate to details for task:', task.id)}
+      onPress={(task) => navigation.navigate('TaskDetails', { id: task.id })}
     />
   );
 

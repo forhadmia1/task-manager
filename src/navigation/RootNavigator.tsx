@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { BottomTabNavigator } from './navigators/BottomTabNavigator';
 import NetInfo from '@react-native-community/netinfo';
 import { useAppDispatch } from '../store';
 import { setOfflineMode } from '../store/slices/taskSlice';
+import { MainNavigator } from './navigators/MainNavigator';
 
 export function RootNavigator() {
   const dispatch = useAppDispatch();
@@ -21,7 +21,7 @@ export function RootNavigator() {
 
   return (
     <NavigationContainer>
-      <BottomTabNavigator />
+      <MainNavigator />
     </NavigationContainer>
   );
 }
