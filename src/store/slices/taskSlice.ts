@@ -59,6 +59,24 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
+export const createCategory = createAsyncThunk(
+  'tasks/createCategory',
+  async (categoryData: Omit<Category, 'id' | 'created_at'>, { rejectWithValue }) => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .insert([categoryData])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as Category;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const createTask = createAsyncThunk(
   'tasks/createTask',
   async (taskData: Omit<Task, 'id' | 'created_at' | 'starred' | 'status'>, { rejectWithValue }) => {
@@ -160,8 +178,20 @@ const taskSlice = createSlice({
         state.tasks = state.tasks.filter(t => t.id !== action.payload);
       })
       // Fetch Categories
+      .addCase(fetchCategories.pending, (state) => {
+        state.isRefreshing = true;
+      })
       .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.isRefreshing = false;
         state.categories = action.payload;
+      })
+      .addCase(fetchCategories.rejected, (state) => {
+        state.isRefreshing = false;
+      })
+      // Create Category
+      .addCase(createCategory.fulfilled, (state, action) => {
+        state.categories.push(action.payload);
+        state.categories.sort((a, b) => a.name.localeCompare(b.name));
       })
 
   },
