@@ -7,7 +7,7 @@ import { ScreenWrapper } from '../../../components/ScreenWrapper';
 import { TaskCard, Task } from '../components/TaskCard';
 import { AddTaskModal } from '../components/AddTaskModal';
 import { useAppDispatch, useAppSelector } from '../../../store';
-import { fetchTasks } from '../../../store/slices/taskSlice';
+import { fetchTasks, toggleTaskStarred } from '../../../store/slices/taskSlice';
 import { selectFilteredAndSortedTasks, TaskStatusFilter, TaskSortOption } from '../../../store/selectors/taskSelectors';
 import { debounce } from '../../../utils/debounce';
 import type { AppStackParamList } from '../../../navigation/types';
@@ -64,6 +64,7 @@ export function TaskListScreen() {
     <TaskCard
       task={item}
       onPress={(task) => navigation.navigate('TaskDetails', { id: task.id })}
+      onToggleStar={(task) => dispatch(toggleTaskStarred(task.id))}
     />
   );
 

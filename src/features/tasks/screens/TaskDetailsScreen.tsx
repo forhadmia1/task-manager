@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, AlertButto
 import { useNavigation } from '@react-navigation/native';
 import { ScreenWrapper } from '../../../components/ScreenWrapper';
 import { Header } from '../../../components/Header';
-import { ArrowLeft, Edit2, Calendar, Circle, CheckCircle2, Clock, Folder, Hash, Trash2 } from 'lucide-react-native';
+import { ArrowLeft, Edit2, Calendar, Circle, CheckCircle2, Clock, Folder, Hash, Trash2, Star } from 'lucide-react-native';
 import { useAppSelector, useAppDispatch } from '../../../store';
 import { TaskStatus } from '../components/TaskCard';
-import { updateTask, deleteTask } from '../../../store/slices/taskSlice';
+import { updateTask, deleteTask, toggleTaskStarred } from '../../../store/slices/taskSlice';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../../../navigation';
 
@@ -94,7 +94,18 @@ export function TaskDetailsScreen({ route }: any) {
       />
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <View style={styles.headerRow}>
-          <Text style={styles.title}>{task.title}</Text>
+          <TouchableOpacity
+            onPress={() => dispatch(toggleTaskStarred(task.id))}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            style={{ marginRight: 12 }}
+          >
+            <Star
+              color={task.starred ? "#F59E0B" : "#D1D5DB"}
+              fill={task.starred ? "#F59E0B" : "transparent"}
+              size={28}
+            />
+          </TouchableOpacity>
+          <Text style={[styles.title, { flex: 1 }]} numberOfLines={2}>{task.title}</Text>
         </View>
 
         <TouchableOpacity style={styles.statusRow} onPress={handleUpdateStatus} activeOpacity={0.7}>

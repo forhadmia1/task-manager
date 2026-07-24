@@ -7,7 +7,7 @@ export const mergeTasksWithLocal = (remoteTasks: Task[], localTasks: Task[]): Ta
         if (localTask) {
             return {
                 ...remoteTask,
-                isStarred: localTask.starred,
+                starred: localTask.starred,
             };
         }
         return remoteTask;

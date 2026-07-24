@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Calendar, CheckCircle2, Circle, Clock } from 'lucide-react-native';
+import { Calendar, CheckCircle2, Circle, Clock, Star } from 'lucide-react-native';
 
 export type TaskStatus = 'pending' | 'inprogress' | 'complete';
 
@@ -18,6 +18,7 @@ export interface Task {
 interface TaskCardProps {
   task: Task;
   onPress?: (task: Task) => void;
+  onToggleStar?: (task: Task) => void;
 }
 
 const getStatusIcon = (status: TaskStatus) => {
@@ -39,7 +40,7 @@ const getStatusText = (status: TaskStatus) => {
   }
 };
 
-export function TaskCard({ task, onPress }: TaskCardProps) {
+export function TaskCard({ task, onPress, onToggleStar }: TaskCardProps) {
   return (
     <TouchableOpacity
       style={styles.card}
@@ -47,6 +48,17 @@ export function TaskCard({ task, onPress }: TaskCardProps) {
       activeOpacity={0.7}
     >
       <View style={styles.headerRow}>
+        <TouchableOpacity
+          onPress={() => onToggleStar?.(task)}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          style={{ marginRight: 12 }}
+        >
+          <Star
+            color={task.starred ? "#F59E0B" : "#D1D5DB"}
+            fill={task.starred ? "#F59E0B" : "transparent"}
+            size={22}
+          />
+        </TouchableOpacity>
         <View style={styles.titleContainer}>
           <Text style={[
             styles.title,
