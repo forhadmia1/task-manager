@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, AlertButto
 import { useNavigation } from '@react-navigation/native';
 import { ScreenWrapper } from '../../../components/ScreenWrapper';
 import { Header } from '../../../components/Header';
-import { ArrowLeft, Edit2, Calendar, Circle, CheckCircle2, Clock, Folder, Hash } from 'lucide-react-native';
+import { ArrowLeft, Edit2, Calendar, Circle, CheckCircle2, Clock, Folder, Hash, Trash2 } from 'lucide-react-native';
 import { useAppSelector, useAppDispatch } from '../../../store';
 import { TaskStatus } from '../components/TaskCard';
-import { updateTask } from '../../../store/slices/taskSlice';
+import { updateTask, deleteTask } from '../../../store/slices/taskSlice';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../../../navigation';
 
@@ -48,6 +48,7 @@ export function TaskDetailsScreen({ route }: any) {
     }
   };
 
+  //update status handler
   const handleUpdateStatus = () => {
     const buttons: AlertButton[] = [];
     if (task.status !== 'pending') buttons.push({ text: 'Pending', onPress: () => dispatch(updateTask({ id, updates: { status: 'pending' } })) });
@@ -56,6 +57,30 @@ export function TaskDetailsScreen({ route }: any) {
     buttons.push({ text: 'Cancel', style: 'cancel' });
 
     Alert.alert('Update Status', 'Select a new status for this task', buttons);
+  };
+
+
+  //task delete handler
+  const handleDeleteTask = () => {
+    Alert.alert(
+      'Delete Task',
+      'Are you sure you want to delete this task? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await dispatch(deleteTask(id)).unwrap();
+              navigation.goBack();
+            } catch (error: any) {
+              Alert.alert('Error', error?.message || 'Failed to delete task');
+            }
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -107,6 +132,15 @@ export function TaskDetailsScreen({ route }: any) {
             {task.description || 'No description provided.'}
           </Text>
         </View>
+
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDeleteTask}
+          activeOpacity={0.7}
+        >
+          <Trash2 color="#EF4444" size={20} />
+          <Text style={styles.deleteButtonText}>Delete Task</Text>
+        </TouchableOpacity>
       </ScrollView>
     </ScreenWrapper>
   );
@@ -127,4 +161,22 @@ const styles = StyleSheet.create({
   descriptionContainer: { backgroundColor: '#FFFFFF', padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#E5E7EB' },
   sectionTitle: { fontSize: 12, fontWeight: '600', color: '#6B7280', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
   description: { fontSize: 16, color: '#374151', lineHeight: 24 },
+  deleteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FEF2F2',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FCA5A5',
+    marginTop: 24,
+    marginBottom: 40,
+  },
+  deleteButtonText: {
+    color: '#EF4444',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
 });

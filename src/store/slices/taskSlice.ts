@@ -96,6 +96,23 @@ export const updateTask = createAsyncThunk(
   }
 );
 
+export const deleteTask = createAsyncThunk(
+  'tasks/deleteTask',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const { error } = await supabase
+        .from('tasks')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const taskSlice = createSlice({
   name: 'tasks',
   initialState,
@@ -137,6 +154,10 @@ const taskSlice = createSlice({
         if (index !== -1) {
           state.tasks[index] = action.payload;
         }
+      })
+      // Delete Task
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        state.tasks = state.tasks.filter(t => t.id !== action.payload);
       })
       // Fetch Categories
       .addCase(fetchCategories.fulfilled, (state, action) => {
